@@ -7,8 +7,9 @@ const linkOk = (v) => /^https?:\/\/.+/.test(v);
 export default function FormularioPostulacion({onAdd}) {
     const [nombre, setNombre] = useState("");
     const [email, setEmail] = useState("");
-    const [experienciaAnios, setExperienciaAnios] = useState("");
-    const [experienciaTexto, setExperienciaTexto] = useState("");
+    const [telefono, setTelefono] = useState("");
+    const [experiencia, setExperiencia] = useState("");
+    const [experiencia1, setExperiencia1] = useState("");
     const [skills, setSkills] = useState("");
     const [linkCV, setLinkCV] = useState("");
     const [error, setError] = useState("");
@@ -18,6 +19,7 @@ export default function FormularioPostulacion({onAdd}) {
         e.preventDefault();
         setError("");
 
+
         if (!nombre.trim()) return setError("El nombre es obligatorio.");
         if (!emailOk(email)) return setError("El email es inválido.");
         if (!linkCV.trim()) return setError("Por favor, agregue el link a su CV");
@@ -25,23 +27,41 @@ export default function FormularioPostulacion({onAdd}) {
 
         setEnviando(true);
         try {
-            const data = {
+            const datos = {
                 nombre: nombre.trim(),
                 email: email.trim(),
-                experienciaAnios: Number(experienciaAnios),
-                experienciaTexto: experienciaTexto.trim(),
+                telefono: telefono.trim(),
+                experiencia: Number(experiencia),
+                experiencia1: experiencia1.trim(),
                 skills: skills.split(",").map((s) => s.trim()).filter(Boolean),
                 linkCV: linkCV.trim()
             };
 
-            onAdd?.(data);
+            const res = await fetch("/api/candidato", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(datos),
+            });
+
+            if (res.ok) {
+                const nuevo = await res.json();
+                console.log("Candidato guardado:", nuevo);
+                // podés mostrar mensaje de éxito, limpiar el form, etc.
+            } else {
+                console.error("Error al guardar candidato");
+            }
+
+            //esto limpia el formulario (si? creo..) osea lo settea todo en blanco
             setNombre("");
             setEmail("");
-            setExperienciaAnios("");
-            setExperienciaTexto("");
+            setTelefono("");
+            setExperiencia("");
+            setExperiencia1("");
             setSkills("");
             setLinkCV("");
-            console.log("Postulante (frontend):", data);
+            console.log("Postulante (frontend):", datos);
         } catch (err) {
             setError("Ocurrió un error inesperado.");
         } finally {
@@ -78,13 +98,24 @@ export default function FormularioPostulacion({onAdd}) {
                     />
                 </div>
 
+                {/* TELEFONO */}
+                <div style={estilos.campo}>
+                    <label style={estilos.label}>Telefono *</label>
+                    <input
+                        style={estilos.input}
+                        value={telefono}
+                        onChange={(e) => setTelefono(e.target.value)}
+                        placeholder="+54 ..."
+                    />
+                </div>
+
                 {/* AÑOS DE EXPERIENCIA */}
                 <div style={estilos.campo}>
                     <label style={estilos.label}>Años de experiencia</label>
                     <input
                         style={estilos.input}
-                        type="number" min="0" value={experienciaAnios}
-                        onChange={(e) => setExperienciaAnios(e.target.value)}
+                        type="number" min="0" value={experiencia}
+                        onChange={(e) => setExperiencia(e.target.value)}
                         placeholder="0"
                     />
                 </div>
@@ -94,8 +125,8 @@ export default function FormularioPostulacion({onAdd}) {
                     <label style={estilos.label}>Experiencia </label>
                     <textarea
                         style={estilos.textarea}
-                        value={experienciaTexto}
-                        onChange={(e) => setExperienciaTexto(e.target.value)}
+                        value={experiencia1}
+                        onChange={(e) => setExperiencia1(e.target.value)}
                     />
                 </div>
 
