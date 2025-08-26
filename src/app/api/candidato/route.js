@@ -13,7 +13,7 @@ export async function POST(req) {
                 experiencia: body.experiencia, //anios
                 experiencia1: body.experiencia1, //texto
                 skills: body.skills,
-                linkCV: body.linkCV,
+                linkCV: body.linkCV
             },
         });
 

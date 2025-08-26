@@ -1,13 +1,24 @@
 'use client';
+import { useEffect, useState } from 'react';
 
 import TablaCandidatos from '../../components/TablaCandidatos';
 
-const candidatosTabla = [
-    {id: 1, nombre: "Ana Pérez", email: "ana@mail.com", experiencia: 3, linkCV: "https://"},
-    {id: 2, nombre: "Luis Gómez", email: "luis@mail.com", experiencia: 5, linkCV: "https://"}
-];
-
 export default function TablaPage() {
+    const [candidatosTabla, setCandidatosTabla] = useState([]);
+
+    useEffect(() => {
+        const traerCandidatos = async () => {
+            try {
+                const res = await fetch('/api/candidatos');
+                const data = await res.json();
+                setCandidatosTabla(data);
+            } catch (err) {
+                console.error("Error al traer candidatos", err);
+            }
+        };
+        traerCandidatos();
+    }, []);
+
     return (
         <main style={{padding: '32px'}}>
             <TablaCandidatos candidatos={candidatosTabla}/>

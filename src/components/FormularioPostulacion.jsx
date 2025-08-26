@@ -20,8 +20,10 @@ export default function FormularioPostulacion({onAdd}) {
         setError("");
 
 
-        if (!nombre.trim()) return setError("El nombre es obligatorio.");
+        if (!nombre.trim()) return setError("El campo nombre es obligatorio.");
+        if (!email.trim()) return setError("El campo email es obligatorio");
         if (!emailOk(email)) return setError("El email es inválido.");
+        if (!telefono.trim()) return setError("El campo telefono es obligatorio");
         if (!linkCV.trim()) return setError("Por favor, agregue el link a su CV");
         if (!linkOk(linkCV)) return setError("El link es inválido.");
 
@@ -34,7 +36,11 @@ export default function FormularioPostulacion({onAdd}) {
                 experiencia: Number(experiencia),
                 experiencia1: experiencia1.trim(),
                 skills: skills.split(",").map((s) => s.trim()).filter(Boolean),
-                linkCV: linkCV.trim()
+                linkCV: linkCV.trim(),
+                updatedAt: new Date(),
+                experiencia2: "",
+                educacion: "",
+                urlLinkedin: "",
             };
 
             const res = await fetch("/api/candidato", {
@@ -62,8 +68,10 @@ export default function FormularioPostulacion({onAdd}) {
             setSkills("");
             setLinkCV("");
             console.log("Postulante (frontend):", datos);
-        } catch (err) {
-            setError("Ocurrió un error inesperado.");
+
+        } catch (error) {
+            console.error("Error al crear candidato:", error); // <--- esta línea
+            return NextResponse.json({error: 'Error al crear candidato'}, {status: 500});
         } finally {
             setEnviando(false);
         }
