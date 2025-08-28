@@ -31,7 +31,7 @@ return (
                 {/* VA MOSTRANDO LOS DATOS DE CADA CANDIDATO */}
                 <tbody>
                 {candidatos.map((candidato) => (
-                    <tr key={c.id} style={estilos.fila}>
+                    <tr key={candidato.id} style={estilos.fila}>
                         <td style={estilos.td}>{candidato.nombre}</td>
                         <td style={estilos.td}>{candidato.email}</td>
                         <td style={estilos.td}>{candidato.experiencia} años</td>
